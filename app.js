@@ -2,6 +2,15 @@
 
 const addBtn = document.getElementById("add");
 
+// Saving notes to LS
+const updateLocalStorage = () => {
+  const notesText = document.querySelectorAll("textarea");
+  const notes = [];
+  notesText.forEach((note) => notes.push(note.value));
+  localStorage.setItem("notes", JSON.stringify(notes));
+};
+
+// Adding notes
 const addNewNote = (text = "") => {
   const note = document.createElement("div");
   note.classList.add("note");
@@ -26,6 +35,7 @@ const addNewNote = (text = "") => {
 
   deleteBtn.addEventListener("click", () => {
     note.remove();
+    updateLocalStorage();
   });
 
   editBtn.addEventListener("click", () => {
@@ -37,9 +47,16 @@ const addNewNote = (text = "") => {
     const { value } = e.target;
 
     main.innerHTML = value;
+    updateLocalStorage();
   });
 
   document.body.appendChild(note);
 };
+
+// Adding from LS the existing notes
+const notes = JSON.parse(localStorage.getItem("notes"));
+if (notes) {
+  notes.forEach((note) => addNewNote(note));
+}
 
 addBtn.addEventListener("click", () => addNewNote(""));
